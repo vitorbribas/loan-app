@@ -1,55 +1,45 @@
-# syntax = docker/dockerfile:1
+FROM ruby:3.1.4-alpine3.19 as base
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.1.4
-FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
+RUN apk update --no-cache \
+  && apk upgrade --no-cache \
+  && apk add --no-cache \
+  postgresql
 
-# Rails app lives here
-WORKDIR /rails
+FROM ruby:3.1.4-alpine3.19 as builder
 
-# Set production environment
-ENV RAILS_ENV="production" \
-    BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
+RUN apk add --update --no-cache \
+    build-base \
+    postgresql-dev
 
+ENV APP_HOME /loan-app
+WORKDIR $APP_HOME
 
-# Throw-away build stage to reduce size of final image
-FROM base as build
+COPY Gemfile* ./
+ENV RAILS_ENV production
+RUN  gem install bundler \
+  && bundle config set without 'development test' \
+  && bundle install --jobs=4
 
-# Install packages needed to build gems
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev pkg-config
+COPY . $APP_HOME
+RUN rm -rf $APP_HOME/tmp/*
 
-# Install application gems
-COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
-    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
-
-# Copy application code
-COPY . .
-
-
-# Final stage for app image
 FROM base
 
-# Install packages needed for deployment
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl postgresql-client && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+ENV RAILS_ENV=production
+ENV APP_USER=shoe_store
+ENV APP_GROUP=shoe_store
+ENV RAILS_LOG_TO_STDOUT="true"
 
-# Copy built artifacts: gems, application
-COPY --from=build /usr/local/bundle /usr/local/bundle
-COPY --from=build /rails /rails
+RUN adduser -D $APP_USER
 
-# Run and own only the runtime files as a non-root user for security
-RUN useradd rails --create-home --shell /bin/bash && \
-    chown -R rails:rails db log tmp
-USER rails:rails
+USER $APP_USER
 
-# Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+ENV APP_HOME /loan-app
+WORKDIR $APP_HOME
 
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 3000
-CMD ["./bin/rails", "server"]
+COPY --from=builder /usr/local/bundle/ /usr/local/bundle/
+COPY --from=builder --chown=$APP_USER:$APP_GROUP $APP_HOME $APP_HOME
+
+RUN mkdir -p tmp/pids && rm -rf vendor/
+
+CMD [ "bin/rails", "s" ]
