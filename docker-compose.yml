@@ -4,8 +4,7 @@ services:
   postgres:
     container_name: postgres-local
     environment:
-      - POSTGRES_PASSWORD=loan
-      - POSTGRES_USER=loan
+      - POSTGRES_PASSWORD=postgres
     image: postgres:13.5-alpine
     ports:
       - 5432:5432
