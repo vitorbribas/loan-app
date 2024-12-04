@@ -16,7 +16,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_03_025046) do
 
   create_table "proposals", force: :cascade do |t|
     t.decimal "amount", null: false
-    t.integer "tax_factor", null: false
+    t.integer "person_age", null: false
     t.integer "payment_term", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

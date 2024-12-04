@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :proposal do
-    amount { Faker::Number.between(from: 1000, to: 5000) }
-    tax_factor { Faker::Number.between(from: 2, to: 5) }
+    amount { Faker::Number.decimal(l_digits: 4, r_digits: 2) }
+    person_age { Faker::Number.between(from: 18, to: 70) }
     payment_term { [12, 24, 36].sample }
   end
 end
