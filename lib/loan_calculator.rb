@@ -12,15 +12,19 @@ class LoanCalculator
     validate_args
   end
 
-  def call
-    monthly_payment
+  def total_payment
+    (monthly_payment * @payment_term).round(2).to_f
   end
-
-  private
 
   def monthly_payment
     (numerator / denominator).round(2).to_f
   end
+
+  def total_interest
+    (total_payment - @amount).round(2).to_f
+  end
+
+  private
 
   def numerator
     @amount * monthly_rate
