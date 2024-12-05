@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'loan_calculator'
 require 'rails_helper'
+require 'loan_calculator'
 
 RSpec.describe LoanCalculator do
   let(:annual_rate) { 0.05 }

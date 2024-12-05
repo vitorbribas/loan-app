@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'annual_rate_mapper'
 require 'rails_helper'
+require 'annual_rate_mapper'
 
 RSpec.describe AnnualRateMapper do
   describe '#call' do
