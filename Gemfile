@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 ruby '3.1.4'
 
 gem 'dotenv-rails', '~> 2.1', '>= 2.1.1'
+gem 'jbuilder', '~> 2.10.0'
 gem 'pg', '~> 1.1'
 gem 'puma', '>= 5.0'
 gem 'rails', '~> 7.1.3', '>= 7.1.3.4'
