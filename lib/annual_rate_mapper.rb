@@ -33,7 +33,7 @@ class AnnualRateMapper
     return if @client_age >= SUPPORTED_MIN_AGE && @client_age <= SUPPORTED_MAX_AGE
 
     raise InvalidAge,
-      "Invalid age: #{@client_age}. Supported age range is " /
-        "#{SUPPORTED_MIN_AGE} to #{SUPPORTED_MAX_AGE}."
+      "Invalid age: #{@client_age}. Supported age range is " \
+      "#{SUPPORTED_MIN_AGE} to #{SUPPORTED_MAX_AGE}."
   end
 end
