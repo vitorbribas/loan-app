@@ -32,6 +32,8 @@ class AnnualRateMapper
   def validate_args
     return if @client_age >= SUPPORTED_MIN_AGE && @client_age <= SUPPORTED_MAX_AGE
 
-    raise InvalidAge, "Client age must be between #{SUPPORTED_MIN_AGE} and #{SUPPORTED_MAX_AGE}"
+    raise InvalidAge,
+      "Invalid age: #{@client_age}. Supported age range is " /
+        "#{SUPPORTED_MIN_AGE} to #{SUPPORTED_MAX_AGE}."
   end
 end
