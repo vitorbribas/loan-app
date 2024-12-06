@@ -7,11 +7,17 @@ class Proposal < ApplicationRecord
   validates :amount, numericality: { greater_than: 0 }
   validates :person_age, numericality: { greater_than: 18 }
   validates :payment_term, numericality: { greater_than: 0 }
+  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   before_validation :store_person_age
+  after_save :write_cache
 
   delegate :total_payment, :monthly_payment, :total_interest,
     to: :loan_calculator, prefix: :loan
+
+  def cache_key
+    [email, amount, payment_term, birthdate]
+  end
 
   private
 
@@ -21,6 +27,10 @@ class Proposal < ApplicationRecord
     return errors.add(:birthdate, 'is required') if birthdate.blank?
 
     self.person_age = AgeCalculator.new(birthdate).call
+  end
+
+  def write_cache
+    Rails.cache.write(cache_key, id)
   end
 
   def loan_calculator
