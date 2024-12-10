@@ -26,26 +26,6 @@ services:
       - 1025:1025
       - 8025:8025
 
-  loan-app:
-    container_name: loan-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - 3000:3000
-    environment:
-      RAILS_ENV: development
-    env_file:
-      - .env
-    command: bundle exec rails s -b '0.0.0.0'
-    volumes:
-      - .:/loan-app
-    depends_on:
-      - postgres
-      - redis
-    stdin_open: true
-    tty: true
-
 volumes:
   postgres-data:
   redis-data:
