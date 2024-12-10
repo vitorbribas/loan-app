@@ -1,24 +1,59 @@
-# README
+# Loan App
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Dependências
+- Ruby >= 3.1.4
+- Docker
 
-Things you may want to cover:
+## Iniciando a aplicação
 
-* Ruby version
+1. Suba os serviços que servem à aplicação principal:
 
-* System dependencies
+```
+docker-compose up -d
+```
 
-* Configuration
+2. Inicie o banco de dados:
+```
+rails db:setup
+```
 
-* Database creation
+3. Inicie a aplicação principal (API):
+```
+rails s
+```
 
-* Database initialization
+4. Envie requisições de simulação de propostas:
 
-* How to run the test suite
+```
+curl --request POST \
+  --url http://localhost:3000/api/v1/proposals \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"proposal": {
+		"amount": 200000.0,
+		"payment_term": 62,
+		"birthdate": "11/11/1983",
+		"email": "bsbribas66@gmail.com"
+	}
+}'
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+## Tracking de e-mails
 
-* Deployment instructions
+Acesse a URL [localhost:8025](localhost:8025) para visualizar os e-mails recebidos em ambiente local com o auxílio do [Mailhog](https://github.com/mailhog/MailHog)
 
-* ...
+## Execução dos testes unitários
+
+Execute a bateria de testes unitários implementados com Rspec:
+
+```
+bundle exec rspec
+```
+
+## Execução do linter
+
+Execute o linter Rubocop para checar e garantir a consistência do código:
+
+```
+bundle exec rubocop
+```
