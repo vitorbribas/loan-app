@@ -1,0 +1,24 @@
+<html>
+
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+
+<body>
+  <h1>Hey, <%= @proposal.email %></h1>
+  <p>
+    Your loan is available for R$ <%= @proposal.loan_monthly_payment %> during <%= @proposal.payment_term %> months.
+  </p>
+
+  <p> Check some details below:</p>
+
+  <ul>
+    <li>Loan amount: R$ <%= @proposal.amount %></li>
+    <li>Loan monthly payment: R$ <%= @proposal.loan_monthly_payment %></li>
+    <li>Payment term: <%= @proposal.payment_term %></li>
+    <li>Loan total payment: R$ <%= @proposal.loan_total_payment %></li>
+    <li>Loan total interest: R$ <%= @proposal.loan_total_interest %></li>
+  </ul>
+</body>
+
+</html>
