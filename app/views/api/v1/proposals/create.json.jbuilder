@@ -2,7 +2,7 @@
 
 json.data do
   json.extract! @proposal,
-    :loan_total_payment,
-    :loan_monthly_payment,
-    :loan_total_interest
+    :total_payment,
+    :monthly_payment,
+    :total_interest
 end

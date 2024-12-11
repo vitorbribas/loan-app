@@ -8,6 +8,7 @@ class Api::V1::ProposalsController < ApplicationController
     @proposal = Proposal.find_by(id: id) if id.present?
 
     if @proposal.save
+      @proposal.persist_simulation
       @proposal.deliver_simulation
       render :create, status: :created
     else

@@ -49,9 +49,9 @@ RSpec.describe 'Proposals' do
           post api_v1_proposals_path, params: { proposal: valid_attributes }
 
           expect(response).to have_http_status(:created)
-          expect(json[:data][:loan_total_payment]).to eq(proposal.loan_total_payment)
-          expect(json[:data][:loan_monthly_payment]).to eq(proposal.loan_monthly_payment)
-          expect(json[:data][:loan_total_interest]).to eq(proposal.loan_total_interest)
+          expect(json[:data][:total_payment]).to eq(proposal.reload.total_payment.to_s)
+          expect(json[:data][:monthly_payment]).to eq(proposal.reload.monthly_payment.to_s)
+          expect(json[:data][:total_interest]).to eq(proposal.reload.total_interest.to_s)
         end
       end
 
@@ -68,9 +68,9 @@ RSpec.describe 'Proposals' do
           post api_v1_proposals_path, params: { proposal: valid_attributes }
 
           expect(response).to have_http_status(:created)
-          expect(json[:data][:loan_total_payment]).to eq(proposal.loan_total_payment)
-          expect(json[:data][:loan_monthly_payment]).to eq(proposal.loan_monthly_payment)
-          expect(json[:data][:loan_total_interest]).to eq(proposal.loan_total_interest)
+          expect(json[:data][:total_payment]).to eq(proposal.reload.total_payment.to_s)
+          expect(json[:data][:monthly_payment]).to eq(proposal.reload.monthly_payment.to_s)
+          expect(json[:data][:total_interest]).to eq(proposal.reload.total_interest.to_s)
         end
       end
     end

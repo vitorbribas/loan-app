@@ -16,9 +16,9 @@ RSpec.describe ProposalsMailer do
     it 'renders the mailer body', :aggregate_failures do
       expect(mail.body.encoded).to match(proposal.amount.to_s)
       expect(mail.body.encoded).to match(proposal.payment_term.to_s)
-      expect(mail.body.encoded).to match(proposal.loan_total_payment.to_s)
-      expect(mail.body.encoded).to match(proposal.loan_monthly_payment.to_s)
-      expect(mail.body.encoded).to match(proposal.loan_total_interest.to_s)
+      expect(mail.body.encoded).to match(proposal.total_payment.to_s)
+      expect(mail.body.encoded).to match(proposal.monthly_payment.to_s)
+      expect(mail.body.encoded).to match(proposal.total_interest.to_s)
     end
   end
 end

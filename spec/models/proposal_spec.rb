@@ -18,6 +18,9 @@ RSpec.describe Proposal do
     it { is_expected.to validate_numericality_of(:amount).is_greater_than(0) }
     it { is_expected.to validate_numericality_of(:person_age).is_greater_than(18) }
     it { is_expected.to validate_numericality_of(:payment_term).is_greater_than(0) }
+    it { is_expected.to validate_numericality_of(:monthly_payment).is_greater_than(0) }
+    it { is_expected.to validate_numericality_of(:total_payment).is_greater_than(0) }
+    it { is_expected.to validate_numericality_of(:total_interest).is_greater_than(0) }
   end
 
   describe '#write_cache' do

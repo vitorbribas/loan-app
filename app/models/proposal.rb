@@ -7,16 +7,27 @@ class Proposal < ApplicationRecord
   validates :amount, numericality: { greater_than: 0 }
   validates :person_age, numericality: { greater_than: 18 }
   validates :payment_term, numericality: { greater_than: 0 }
+  validates :monthly_payment, :total_payment, :total_interest,
+    numericality: { greater_than: 0 }, allow_nil: true
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   before_validation :store_person_age
   after_save :write_cache
 
-  delegate :total_payment, :monthly_payment, :total_interest,
-    to: :loan_calculator, prefix: :loan
-
   def cache_key
     [email, amount, payment_term, birthdate]
+  end
+
+  def persist_simulation
+    if monthly_payment.present? && total_payment.present? && total_interest.present?
+      return
+    end
+
+    update(
+      monthly_payment: loan_calculator.monthly_payment,
+      total_payment: loan_calculator.total_payment,
+      total_interest: loan_calculator.total_interest
+    )
   end
 
   def enqueue_simulation
