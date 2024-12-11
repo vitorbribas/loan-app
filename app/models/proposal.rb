@@ -10,7 +10,6 @@ class Proposal < ApplicationRecord
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   before_validation :store_person_age
-  after_create :deliver_simulation
   after_save :write_cache
 
   delegate :total_payment, :monthly_payment, :total_interest,
@@ -18,6 +17,14 @@ class Proposal < ApplicationRecord
 
   def cache_key
     [email, amount, payment_term, birthdate]
+  end
+
+  def enqueue_simulation
+    Producer::ProposalSimulation.new(self).call
+  end
+
+  def deliver_simulation
+    ProposalsMailer.deliver_simulation(self).deliver_now
   end
 
   private
@@ -40,9 +47,5 @@ class Proposal < ApplicationRecord
 
   def annual_rate
     @annual_rate ||= AnnualRateMapper.new(person_age).call
-  end
-
-  def deliver_simulation
-    ProposalsMailer.deliver_simulation(self).deliver_now
   end
 end

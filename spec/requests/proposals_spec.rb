@@ -48,7 +48,7 @@ RSpec.describe 'Proposals' do
         it 'returns a successful response', :aggregate_failures do
           post api_v1_proposals_path, params: { proposal: valid_attributes }
 
-          expect(response).to have_http_status(:ok)
+          expect(response).to have_http_status(:created)
           expect(json[:data][:loan_total_payment]).to eq(proposal.loan_total_payment)
           expect(json[:data][:loan_monthly_payment]).to eq(proposal.loan_monthly_payment)
           expect(json[:data][:loan_total_interest]).to eq(proposal.loan_total_interest)
@@ -84,6 +84,49 @@ RSpec.describe 'Proposals' do
 
       it 'returns an unprocessable entity response' do
         post api_v1_proposals_path, params: { proposal: invalid_attributes }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
+  describe 'POST /bulk_create' do
+    context 'with valid parameters' do
+      let(:proposals) do
+        proposals = []
+
+        1000.times do |_i|
+          birth_year = rand(1930..2002)
+          birthdate = Date.new(birth_year, rand(1..12), rand(1..28)).strftime('%d/%m/%Y')
+          amount = rand(1000.0..10_000.0).round(2)
+          payment_term = rand(12..100)
+
+          proposals << {
+            amount: amount,
+            payment_term: payment_term,
+            birthdate: birthdate,
+            email: 'bulk-email@example.com'
+          }
+        end
+
+        proposals
+      end
+
+      it 'creates multiple Proposals', :aggregate_failures do
+        expect do
+          post bulk_create_api_v1_proposals_path, params: { proposals: proposals }
+        end.to change(Proposal, :count).by(1000)
+
+        expect(response).to have_http_status(:created)
+      end
+    end
+
+    context 'with invalid parameters' do
+      it 'does not create any Proposals', :aggregate_failures do
+        proposals_params = Array.new(1000, invalid_attributes)
+        expect do
+          post bulk_create_api_v1_proposals_path, params: { proposals: proposals_params }
+        end.not_to change(Proposal, :count)
 
         expect(response).to have_http_status(:unprocessable_entity)
       end

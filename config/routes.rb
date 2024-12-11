@@ -5,7 +5,11 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
-      resource :proposals, only: :create
+      resource :proposals, only: :create do
+        collection do
+          post :bulk_create
+        end
+      end
     end
   end
 end
